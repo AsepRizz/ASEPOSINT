@@ -13,15 +13,16 @@ pkg update -y && pkg upgrade -y
 
 # Install dependencies
 echo -e "\033[93m[+] Installing dependencies...\033[0m"
-pkg install -y python git curl nmap whois python-pip perl make golang
+pkg install -y python git curl nmap whois python-pip perl make golang openssl-tool
 
 # Install Python packages
 echo -e "\033[93m[+] Installing Python packages...\033[0m"
-pip install requests beautifulsoup4
+pip install --upgrade pip
+pip install requests beautifulsoup4 python-whois dnspython rich
 
-# Install ExifTool
+# Install ExifTool (paket Termux)
 echo -e "\033[93m[+] Installing ExifTool...\033[0m"
-pkg install -y exiftool
+pkg install -y perl-image-exiftool
 
 # Bersihkan folder tools yang sudah ada
 echo -e "\033[93m[+] Cleaning up existing tools...\033[0m"
@@ -37,21 +38,21 @@ cd sherlock
 pip install -r requirements.txt
 cd ..
 
-# Install subfinder menggunakan Go
+# Install Subfinder menggunakan Go
 echo -e "\033[93m[+] Installing SubFinder...\033[0m"
 go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
-mv $HOME/go/bin/subfinder /data/data/com.termux/files/usr/bin/
+mv -f $HOME/go/bin/subfinder $PREFIX/bin/
 
-# Install dirsearch untuk directory brute forcing
+# Install Dirsearch untuk directory brute forcing
 echo -e "\033[93m[+] Installing DirSearch...\033[0m"
 git clone https://github.com/maurosoria/dirsearch.git
 
-# Install whatweb untuk web technology detection
+# Install WhatWeb untuk web technology detection
 echo -e "\033[93m[+] Installing WhatWeb...\033[0m"
 git clone https://github.com/urbanadventurer/WhatWeb.git
 cd WhatWeb
 chmod +x whatweb
-cp whatweb /data/data/com.termux/files/usr/bin/
+cp -f whatweb $PREFIX/bin/
 cd ..
 
 # Create results directory
