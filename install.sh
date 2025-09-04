@@ -13,56 +13,46 @@ pkg update -y && pkg upgrade -y
 
 # Install dependencies
 echo -e "\033[93m[+] Installing dependencies...\033[0m"
-pkg install -y python git curl nmap python-pip perl make golang
+pkg install -y python git curl nmap whois python-pip perl make golang
 
 # Install Python packages
 echo -e "\033[93m[+] Installing Python packages...\033[0m"
-pip install requests beautifulsoup4 python-whois
+pip install requests beautifulsoup4
 
-# Install ExifTool from source
+# Install ExifTool
 echo -e "\033[93m[+] Installing ExifTool...\033[0m"
-wget https://exiftool.org/Image-ExifTool-12.85.tar.gz
-tar xzf Image-ExifTool-12.85.tar.gz
-cd Image-ExifTool-12.85
-perl Makefile.PL
-make
-make install
-cd ..
-rm -rf Image-ExifTool-12.85 Image-ExifTool-12.85.tar.gz
+pkg install -y exiftool
+
+# Bersihkan folder tools yang sudah ada
+echo -e "\033[93m[+] Cleaning up existing tools...\033[0m"
+rm -rf sherlock subfinder dirsearch WhatWeb
 
 # Install external tools
 echo -e "\033[93m[+] Installing external tools...\033[0m"
 
-# Install Sherlock for username checking
-if [ ! -d "sherlock" ]; then
-    git clone https://github.com/sherlock-project/sherlock.git
-    cd sherlock
-    pip install -r requirements.txt
-    cd ..
-fi
+# Install Sherlock untuk username checking
+echo -e "\033[93m[+] Installing Sherlock...\033[0m"
+git clone https://github.com/sherlock-project/sherlock.git
+cd sherlock
+pip install -r requirements.txt
+cd ..
 
-# Install subfinder for subdomain enumeration
-if [ ! -f "/data/data/com.termux/files/usr/bin/subfinder" ]; then
-    git clone https://github.com/projectdiscovery/subfinder.git
-    cd subfinder/v2/cmd/subfinder
-    go build .
-    mv subfinder /data/data/com.termux/files/usr/bin/
-    cd ../../..
-fi
+# Install subfinder menggunakan Go
+echo -e "\033[93m[+] Installing SubFinder...\033[0m"
+go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+mv $HOME/go/bin/subfinder /data/data/com.termux/files/usr/bin/
 
-# Install dirsearch for directory brute forcing
-if [ ! -d "dirsearch" ]; then
-    git clone https://github.com/maurosoria/dirsearch.git
-fi
+# Install dirsearch untuk directory brute forcing
+echo -e "\033[93m[+] Installing DirSearch...\033[0m"
+git clone https://github.com/maurosoria/dirsearch.git
 
-# Install whatweb for web technology detection
-if [ ! -f "/data/data/com.termux/files/usr/bin/whatweb" ]; then
-    git clone https://github.com/urbanadventurer/WhatWeb.git
-    cd WhatWeb
-    chmod +x whatweb
-    cp whatweb /data/data/com.termux/files/usr/bin/
-    cd ..
-fi
+# Install whatweb untuk web technology detection
+echo -e "\033[93m[+] Installing WhatWeb...\033[0m"
+git clone https://github.com/urbanadventurer/WhatWeb.git
+cd WhatWeb
+chmod +x whatweb
+cp whatweb /data/data/com.termux/files/usr/bin/
+cd ..
 
 # Create results directory
 mkdir -p results
